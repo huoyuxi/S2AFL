@@ -1,6 +1,6 @@
 # S2AFL: LLM-Enhanced Fuzzing via Integrating CodeSemantics and Protocol Syntax
 
-**S2AFL** is a protocol fuzzer guided by large language models (LLMs), designed to enhance vulnerability discovery in network protocol implementations. It is built on top of [AFLNet](https://github.com/aflnet/aflnet) , [ChatAFL)](https://github.com/ChatAFLndss/ChatAFLand [ProFuzzBench](https://github.com/profuzzbench/profuzzbench), with semantic-aware enhancements that address long-standing limitations in seed diversity, structure-awareness, and boundary constraint handling.
+**S2AFL** is a protocol fuzzer guided by large language models (LLMs), designed to enhance vulnerability discovery in network protocol implementations. It is built on top of [AFLNet](https://github.com/aflnet/aflnet) , [ChatAFL](https://github.com/ChatAFLndss/ChatAFL)and [ProFuzzBench](https://github.com/profuzzbench/profuzzbench), with semantic-aware enhancements that address long-standing limitations in seed diversity, structure-awareness, and boundary constraint handling.
 
 This repository includes a fully-configured artifact for reproducible experiments and streamlined protocol fuzzing using pre-integrated Docker workflows.
 
