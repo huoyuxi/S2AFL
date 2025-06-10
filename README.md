@@ -1,4 +1,4 @@
-# S2AFL Artifact: Semantics-Driven Protocol Fuzzing Framework
+# S2AFL: LLM-Enhanced Fuzzing via Integrating CodeSemantics and Protocol Syntax
 
 **S2AFL** is a protocol fuzzer guided by large language models (LLMs), designed to enhance vulnerability discovery in network protocol implementations. It is built on top of [AFLNet](https://github.com/aflnet/aflnet) , [ChatAFL)](https://github.com/ChatAFLndss/ChatAFL)and [ProFuzzBench](https://github.com/profuzzbench/profuzzbench), with semantic-aware enhancements that address long-standing limitations in seed diversity, structure-awareness, and boundary constraint handling.
 
@@ -52,12 +52,12 @@ S2AFL-Artifact
 Requires:
 
 - Docker
-- Python 3 with `pandas` and `matplotlib`
+- Python3 
 - Bash
 
 ------
 
-### 2️⃣ Build Docker Images (≈ 40 min)
+### 2️⃣ Build Docker Images 
 
 ```
 ./setup.sh
@@ -160,7 +160,7 @@ Logs are saved in `stall-interactions/` as `request-<id>` / `response-<id>`.
 
 ------
 
-### Ablation Study (5 min human + 180 compute-hours)
+### Ablation Study
 
 ```
 ./run.sh 5 240 proftpd,exim S2AFL,S2AFL-S1,S2AFL-S2
@@ -182,13 +182,42 @@ Key config files:
 
 ------
 
-### Add New Subjects
-
-Follow [ProFuzzBench instructions](https://github.com/profuzzbench/profuzzbench#1-how-do-i-extend-profuzzbench) for extending benchmark targets. Lighttpd 1.4 is included as an example.
-
-------
-
 ## 📌 Technical Note
 
 S2AFL integrates a Python-based agent that acts as a middleware between the fuzzer and LLMs. The system uses Ollama to serve **Tongyi Qianwen Code-72B**, which handles semantic synthesis, prompt orchestration, and runtime decisions.
 
+## REFERENCES
+```bibtex
+@inproceedings{aflnet,
+    title = {AFLNet: Learning to Fuzz with Deep Reinforcement Learning},
+    author = {Chen, Bo and Zang, Yanjun and Xing, Xinyu},
+    booktitle = {28th {USENIX} Security Symposium ({USENIX} Security 19)},
+    year = {2019},
+    pages = {1191--1208},
+    address = {Santa Clara, CA},
+    url = {https://www.usenix.org/conference/usenixsecurity19/presentation/chen-bo}
+}
+```
+```bibtex
+@inproceedings{chatafl,
+    title = {ChatAFL: Towards Intelligent Fuzzing via Natural Language Understanding},
+    author = {Qi, Zhenwei and Lv, Xiaorui and Zhang, Mingwei and others},
+    booktitle = {Proceedings of the 2023 {ACM} SIGSAC Conference on Computer and Communications Security},
+    year = {2023},
+    pages = {2600--2617},
+    publisher = {ACM},
+    address = {Toronto, ON, Canada},
+    url = {https://doi.org/10.1145/3613178.3613205}
+}
+```
+```bibtex
+@inproceedings{profuzzbench,
+    title = {ProFuzzBench: A Comprehensive Benchmark for Fuzzer Performance Evaluation},
+    author = {Zhang, Junjie and Kim, Taesoo and Hu, Xinlei and others},
+    booktitle = {32nd {USENIX} Security Symposium ({USENIX} Security 23)},
+    year = {2023},
+    pages = {3539--3556},
+    address = {Anaheim, CA},
+    url = {https://www.usenix.org/conference/usenixsecurity23/presentation/zhang-junjie}
+}
+```
