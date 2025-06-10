@@ -21,7 +21,13 @@ if $(strstr $FUZZER "afl") || $(strstr $FUZZER "llm"); then
 
   TARGET_DIR=${TARGET_DIR:-"LightFTP"}
   INPUTS=${INPUTS:-"${WORKDIR}/in-ftp"}
+  cd $WORKDIR/LightFTP-gcov/Source/Release
+  
+  # 定义Python脚本的路径
+  PYTHON_SCRIPT="/home/ubuntu/chatafl/gcovr.py"
 
+  # 后台运行Python脚本
+  nohup python3 $PYTHON_SCRIPT &
   #Step-1. Do Fuzzing
   #Move to fuzzing folder
   cd $WORKDIR/${TARGET_DIR}/Source/Release

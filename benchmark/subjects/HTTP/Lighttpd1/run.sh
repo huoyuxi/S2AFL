@@ -21,7 +21,13 @@ if $(strstr $FUZZER "afl") || $(strstr $FUZZER "llm"); then
   if [ -e ${WORKDIR}/run-${FUZZER} ]; then
     source ${WORKDIR}/run-${FUZZER}
   fi
+  cd $WORKDIR/lighttpd1-gcov
+  
+  # 定义Python脚本的路径
+  PYTHON_SCRIPT="/home/ubuntu/chatafl/gcovr.py"
 
+  # 后台运行Python脚本
+  nohup python3 $PYTHON_SCRIPT &
   #Step-1. Do Fuzzing
   #Move to fuzzing folder
   cd $WORKDIR/${TARGET_DIR}/
