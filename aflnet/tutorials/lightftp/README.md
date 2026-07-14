@@ -26,9 +26,8 @@ CC=afl-clang-fast make clean all
 # Copy configuration file
 cp $AFLNET/tutorials/lightftp/fftp.conf ./
 # Setup certificate and shared folder
-# In this tutorial, we have created ready-to-use certificate files
-# Please look at the LightFTP document if you want to create these files yourself
-cp -r $AFLNET/tutorials/lightftp/certificate ~/
+# Generate your own test certificate files and place them under ~/certificate
+# before starting the server; the public repository does not ship private keys.
 # We assume that the home folder is /home/ubuntu
 # If you want to use another folder, you need to update the fftp.conf file accordingly
 mkdir ~/ftpshare

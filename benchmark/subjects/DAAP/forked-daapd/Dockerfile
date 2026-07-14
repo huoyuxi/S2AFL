@@ -48,21 +48,6 @@ RUN cd aflnet && \
     make clean all $MAKE_OPT && \
     cd llvm_mode && make $MAKE_OPT
 
-COPY --chown=ubuntu:ubuntu s2afl s2afl
-RUN cd s2afl && \
-    make clean all $MAKE_OPT && \
-    cd llvm_mode && make $MAKE_OPT
-
-COPY --chown=ubuntu:ubuntu s2afl-s1 s2afl-s1
-RUN cd s2afl-s1 && \
-    make clean all $MAKE_OPT && \
-    cd llvm_mode && make $MAKE_OPT
-
-COPY --chown=ubuntu:ubuntu s2afl-s2 s2afl-s2
-RUN cd s2afl-s2 && \
-    make clean all $MAKE_OPT && \
-    cd llvm_mode && make $MAKE_OPT
-
 
 
 # Set up environment variables for AFLNet

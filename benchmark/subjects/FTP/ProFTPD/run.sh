@@ -6,6 +6,19 @@ OPTIONS=$3    #all configured options -- to make it flexible, we only fix some o
 TIMEOUT=$4    #time for fuzzing
 SKIPCOUNT=$5  #used for calculating cov over time. e.g., SKIPCOUNT=5 means we run gcovr after every 5 test cases
 
+CONTAINER_HOME=${PFBENCH_CONTAINER_HOME:-${HOME:-}}
+WORKDIR=${WORKDIR:-${PFBENCH_CONTAINER_WORKDIR:-${CONTAINER_HOME:+${CONTAINER_HOME}/experiments}}}
+FUZZER_ROOT=${FUZZER_ROOT:-${PFBENCH_FUZZER_ROOT:-$CONTAINER_HOME}}
+FUZZER_BIN=${FUZZER_BIN:-${FUZZER_ROOT}/${FUZZER}/afl-fuzz}
+GCOV_HELPER=${GCOV_HELPER:-${PFBENCH_GCOVR_HELPER:-${WORKDIR}/gcovr.py}}
+if [ -z "$WORKDIR" ] || [ -z "$FUZZER_ROOT" ]; then
+  echo "WORKDIR/FUZZER_ROOT is not set; configure PFBENCH_CONTAINER_HOME or override them explicitly." 1>&2
+  exit 1
+fi
+if [ ! -f "$GCOV_HELPER" ] && [ -f "${FUZZER_ROOT}/chatafl/gcovr.py" ]; then
+  GCOV_HELPER="${FUZZER_ROOT}/chatafl/gcovr.py"
+fi
+
 strstr() {
   [ "${1#*$2*}" = "$1" ] && return 1
   return 0
@@ -20,18 +33,16 @@ if $(strstr $FUZZER "afl") || $(strstr $FUZZER "llm"); then
   fi
 
   TARGET_DIR=${TARGET_DIR:-"proftpd"}
-  INPUTS=${INPUTS:-${WORKDIR}"/in-ftp"}
+  INPUTS=${INPUTS:-"${WORKDIR}/in-ftp"}
   cd $WORKDIR/proftpd-gcov
   
-  # 定义Python脚本的路径
-  PYTHON_SCRIPT="/home/ubuntu/chatafl/gcovr.py"
-
-  # 后台运行Python脚本
-  nohup python3 $PYTHON_SCRIPT &
+  if [ -f "$GCOV_HELPER" ]; then
+    nohup python3 "$GCOV_HELPER" >/dev/null 2>&1 &
+  fi
   #Step-1. Do Fuzzing
   #Move to fuzzing folder
   cd $WORKDIR/${TARGET_DIR}
-  timeout -k 2s --preserve-status $TIMEOUT /home/ubuntu/${FUZZER}/afl-fuzz -d -i ${INPUTS} -o $OUTDIR -x ${WORKDIR}/ftp.dict -N tcp://127.0.0.1/21 $OPTIONS -c ${WORKDIR}/clean ./proftpd -n -c ${WORKDIR}/basic.conf -X
+  timeout -k 2s --preserve-status $TIMEOUT ${FUZZER_BIN} -d -i ${INPUTS} -o $OUTDIR -x ${WORKDIR}/ftp.dict -N tcp://127.0.0.1/21 $OPTIONS -c ${WORKDIR}/clean ./proftpd -n -c ${WORKDIR}/basic.conf -X
 
   STATUS=$?
 

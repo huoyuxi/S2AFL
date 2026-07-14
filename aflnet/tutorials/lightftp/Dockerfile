@@ -47,5 +47,8 @@ RUN cd /home/ubuntu && \
 RUN cd /home/ubuntu/LightFTP/Source/Release && \
     cp ${AFLNET}/tutorials/lightftp/fftp.conf ./ && \
     cp ${AFLNET}/tutorials/lightftp/ftpclean.sh ./ && \
-    cp -r ${AFLNET}/tutorials/lightftp/certificate ~/ && \
+    mkdir -p ~/certificate && \
+    openssl genrsa -aes256 -passout pass:ubuntu -out ~/certificate/my.pem 2048 && \
+    openssl req -new -x509 -key ~/certificate/my.pem -passin pass:ubuntu \
+      -out ~/certificate/my.crt -days 365 -subj "/CN=localhost" && \
     mkdir ~/ftpshare

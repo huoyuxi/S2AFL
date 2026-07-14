@@ -11,7 +11,12 @@ TIMEOUT=$7    #time for fuzzing
 SKIPCOUNT=$8  #used for calculating coverage over time. e.g., SKIPCOUNT=5 means we run gcovr after every 5 test cases
 DELETE=$9
 
-WORKDIR="/home/ubuntu/experiments"
+CONTAINER_HOME="${PFBENCH_CONTAINER_HOME:-${HOME:-}}"
+WORKDIR="${WORKDIR:-${PFBENCH_CONTAINER_WORKDIR:-${CONTAINER_HOME:+${CONTAINER_HOME}/experiments}}}"
+if [ -z "$WORKDIR" ]; then
+  echo "WORKDIR is not set; configure PFBENCH_CONTAINER_HOME or WORKDIR explicitly." 1>&2
+  exit 1
+fi
 
 #keep all container ids
 cids=()
@@ -38,7 +43,7 @@ printf "\n${FUZZER^^}: Collecting results and save them to ${SAVETO}"
 index=1
 for id in ${cids[@]}; do
   printf "\n${FUZZER^^}: Collecting results from container ${id}"
-  docker cp ${id}:/home/ubuntu/experiments/${OUTDIR}.tar.gz ${SAVETO}/${OUTDIR}_${index}.tar.gz > /dev/null
+  docker cp ${id}:${WORKDIR}/${OUTDIR}.tar.gz ${SAVETO}/${OUTDIR}_${index}.tar.gz > /dev/null
   if [ ! -z $DELETE ]; then
     printf "\nDeleting ${id}"
     docker rm ${id} # Remove container now that we don't need it

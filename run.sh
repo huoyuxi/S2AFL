@@ -15,6 +15,7 @@ export FUZZER_LIST=$4
 if [[ "x$NUM_CONTAINERS" == "x" ]] || [[ "x$TIMEOUT" == "x" ]] || [[ "x$TARGET_LIST" == "x" ]] || [[ "x$FUZZER_LIST" == "x" ]]
 then
     echo "Usage: $0 NUM_CONTAINERS TIMEOUT TARGET FUZZER"
+    echo "Public benchmark automation currently supports FUZZER=aflnet only."
     exit 1
 fi
 

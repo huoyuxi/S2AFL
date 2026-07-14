@@ -1,4 +1,4 @@
-# Binaries produced by "make".
+# Native binaries produced by AFL/AFLNet builds.
 afl-analyze
 afl-as
 afl-clang
@@ -14,7 +14,7 @@ aflnet-replay
 aflnet.o
 as
 
-# Binaries produced by "make -C llvm_mode"
+# LLVM mode outputs.
 afl-clang-fast
 afl-clang-fast++
 afl-llvm-pass.so
@@ -22,8 +22,46 @@ afl-llvm-rt-32.o
 afl-llvm-rt-64.o
 afl-llvm-rt.o
 
+# Benchmark-generated artifacts.
 res_*
-benchmark/subjects/*/*/s2afl
-benchmark/subjects/*/*/s2afl-s1
-benchmark/subjects/*/*/s2afl-s2
+results-*
+benchmark/results-*
 benchmark/subjects/*/*/aflnet
+*.tar.gz
+
+# Python workflow outputs and caches.
+python/.venv/
+python/venv/
+python/output/
+python/logs/
+python/tmp/
+python/*.log
+python/*.sqlite3
+python/**/__pycache__/
+python/**/*.pyc
+python/.env
+python/.env.*
+python/S2AFL/output/dynamic_taint_mapping/
+python/S2AFL/output/results/
+python/S2AFL/knowledge/data/implementations/
+
+# Generic sensitive or generated files.
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.log
+logs/
+outputs/
+results/
+experiments/
+checkpoints/
+cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+dist/
+core
+core.*

@@ -39,10 +39,10 @@ FUZZ_HOSTS='host1 host2 host3 host4'
 FUZZ_DOMAIN='example.com'
 
 # Remote user for SSH
-FUZZ_USER=bob
+FUZZ_USER=${FUZZ_USER:-fuzz}
 
 # Directory to synchronize
-SYNC_DIR='/home/bob/sync_dir'
+SYNC_DIR=${SYNC_DIR:-/srv/afl-sync}
 
 # Interval (seconds) between sync attempts
 SYNC_INTERVAL=$((30 * 60))

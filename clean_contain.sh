@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 如果有传入参数，则使用传入的参数；否则使用默认列表
+# Use the provided subject list when present; otherwise use the default list.
 if [ "$#" -gt 0 ]; then
     subjects=("$@")
 else
@@ -11,11 +11,11 @@ else
     )
 fi
 
-# 遍历并清理容器和镜像
+# Iterate through the subjects and clean matching containers/images.
 for subject in "${subjects[@]}"; do
     echo "Cleaning containers and image for: ${subject}"
 
-    # 停止并删除基于该镜像的所有容器
+    # Stop and remove all containers created from the subject image.
     { docker ps -a -q --filter "ancestor=${subject}:latest" | xargs docker stop 2>/dev/null | xargs docker rm 2>/dev/null; } >/dev/null 2>&1
 done
 

@@ -1,0 +1,85 @@
+{
+  "implementation": "LightFTP",
+  "protocol": "FTP",
+  "generated_by": "s2afl-public-sample",
+  "trace_summary": {
+    "purpose": "illustrative example only",
+    "request_sequence": [
+      "USER anonymous\\r\\n",
+      "PASS guest@example.com\\r\\n",
+      "CWD /pub\\r\\n"
+    ],
+    "notes": [
+      "This trace summary is documentation only and is ignored by the importer.",
+      "It shows how message order can be aligned with the normalized field mappings."
+    ]
+  },
+  "field_mappings": [
+    {
+      "command": "USER",
+      "template": "USER <username>\\r\\n",
+      "filled_message": "USER anonymous\\r\\n",
+      "fields": [
+        {
+          "field_name": "username",
+          "byte_range": [
+            5,
+            14
+          ],
+          "functions": [
+            {
+              "function": "ParseUserCommand",
+              "relation": "handler",
+              "variables": [
+                "username"
+              ],
+              "all_variables": [
+                "username",
+                "user_len"
+              ],
+              "taint_offsets_in_field": [
+                0,
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "command": "CWD",
+      "template": "CWD <path>\\r\\n",
+      "filled_message": "CWD /pub\\r\\n",
+      "fields": [
+        {
+          "field_name": "path",
+          "byte_range": [
+            4,
+            8
+          ],
+          "functions": [
+            {
+              "function": "ParseCwdCommand",
+              "relation": "dataflow",
+              "variables": [
+                "dirname"
+              ],
+              "all_variables": [
+                "dirname",
+                "path_len"
+              ],
+              "taint_offsets_in_field": [
+                0,
+                1,
+                2,
+                3
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

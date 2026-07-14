@@ -1,0 +1,5 @@
+USER ftp
+PASS ftp
+PWD
+TYPE I
+QUIT

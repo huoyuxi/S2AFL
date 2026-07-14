@@ -49,21 +49,6 @@ RUN cd aflnet && \
     make clean all $MAKE_OPT && \
     cd llvm_mode && make $MAKE_OPT
 
-COPY --chown=ubuntu:ubuntu s2afl s2afl
-RUN cd s2afl && \
-    make clean all $MAKE_OPT && \
-    cd llvm_mode && make $MAKE_OPT
-
-COPY --chown=ubuntu:ubuntu s2afl-s1 s2afl-s1
-RUN cd s2afl-s1 && \
-    make clean all $MAKE_OPT && \
-    cd llvm_mode && make $MAKE_OPT
-
-COPY --chown=ubuntu:ubuntu s2afl-s2 s2afl-s2
-RUN cd s2afl-s2 && \
-    make clean all $MAKE_OPT && \
-    cd llvm_mode && make $MAKE_OPT
-
 # Set up environment variables for AFLNet
 ENV WORKDIR="/home/ubuntu/experiments"
 ENV AFLNET="/home/ubuntu/aflnet"
@@ -95,7 +80,10 @@ RUN cd $WORKDIR && \
 RUN cd ${WORKDIR}/LightFTP/Source/Release && \
     cp ${AFLNET}/tutorials/lightftp/fftp.conf ./ && \
     cp ${AFLNET}/tutorials/lightftp/ftpclean.sh ./ && \
-    cp -r ${AFLNET}/tutorials/lightftp/certificate /home/ubuntu && \
+    mkdir -p /home/ubuntu/certificate && \
+    openssl genrsa -aes256 -passout pass:ubuntu -out /home/ubuntu/certificate/my.pem 2048 && \
+    openssl req -new -x509 -key /home/ubuntu/certificate/my.pem -passin pass:ubuntu \
+      -out /home/ubuntu/certificate/my.crt -days 365 -subj "/CN=localhost" && \
     mkdir /home/ubuntu/ftpshare
 
 # Download and compile LightFTP for coverage analysis

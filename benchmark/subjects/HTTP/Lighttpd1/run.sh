@@ -6,6 +6,19 @@ OPTIONS=$3    #all configured options -- to make it flexible, we only fix some o
 TIMEOUT=$4    #time for fuzzing
 SKIPCOUNT=$5  #used for calculating cov over time. e.g., SKIPCOUNT=5 means we run gcovr after every 5 test cases
 
+CONTAINER_HOME=${PFBENCH_CONTAINER_HOME:-${HOME:-}}
+WORKDIR=${WORKDIR:-${PFBENCH_CONTAINER_WORKDIR:-${CONTAINER_HOME:+${CONTAINER_HOME}/experiments}}}
+FUZZER_ROOT=${FUZZER_ROOT:-${PFBENCH_FUZZER_ROOT:-$CONTAINER_HOME}}
+FUZZER_BIN=${FUZZER_BIN:-${FUZZER_ROOT}/${FUZZER}/afl-fuzz}
+GCOV_HELPER=${GCOV_HELPER:-${PFBENCH_GCOVR_HELPER:-${WORKDIR}/gcovr.py}}
+if [ -z "$WORKDIR" ] || [ -z "$FUZZER_ROOT" ]; then
+  echo "WORKDIR/FUZZER_ROOT is not set; configure PFBENCH_CONTAINER_HOME or override them explicitly." 1>&2
+  exit 1
+fi
+if [ ! -f "$GCOV_HELPER" ] && [ -f "${FUZZER_ROOT}/chatafl/gcovr.py" ]; then
+  GCOV_HELPER="${FUZZER_ROOT}/chatafl/gcovr.py"
+fi
+
 strstr() {
   [ "${1#*$2*}" = "$1" ] && return 1
   return 0
@@ -15,7 +28,7 @@ strstr() {
 if $(strstr $FUZZER "afl") || $(strstr $FUZZER "llm"); then
 
   TARGET_DIR=${TARGET_DIR:-"lighttpd1"}
-  INPUTS=${WORKDIR}/in-http
+  INPUTS=${INPUTS:-"${WORKDIR}/in-http"}
 
   # Run fuzzer-specific commands (if any)
   if [ -e ${WORKDIR}/run-${FUZZER} ]; then
@@ -23,15 +36,13 @@ if $(strstr $FUZZER "afl") || $(strstr $FUZZER "llm"); then
   fi
   cd $WORKDIR/lighttpd1-gcov
   
-  # 定义Python脚本的路径
-  PYTHON_SCRIPT="/home/ubuntu/chatafl/gcovr.py"
-
-  # 后台运行Python脚本
-  nohup python3 $PYTHON_SCRIPT &
+  if [ -f "$GCOV_HELPER" ]; then
+    nohup python3 "$GCOV_HELPER" >/dev/null 2>&1 &
+  fi
   #Step-1. Do Fuzzing
   #Move to fuzzing folder
   cd $WORKDIR/${TARGET_DIR}/
-  timeout -k 2s --preserve-status $TIMEOUT /home/ubuntu/${FUZZER}/afl-fuzz -d -i ${INPUTS} -x ${WORKDIR}/http.dict -o $OUTDIR -N tcp://127.0.0.1/8080 $OPTIONS ./src/lighttpd -D -f ${WORKDIR}/lighttpd.conf -m $PWD/src/.libs
+  timeout -k 2s --preserve-status $TIMEOUT ${FUZZER_BIN} -d -i ${INPUTS} -x ${WORKDIR}/http.dict -o $OUTDIR -N tcp://127.0.0.1/8080 $OPTIONS ./src/lighttpd -D -f ${WORKDIR}/lighttpd.conf -m $PWD/src/.libs
 
   STATUS=$?
 
